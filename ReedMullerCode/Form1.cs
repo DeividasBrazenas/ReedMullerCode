@@ -6,9 +6,12 @@ namespace ReedMullerCode
 {
     public partial class Form1 : Form
     {
+        private readonly Channel _channel;
+
         public Form1()
         {
             InitializeComponent();
+            _channel = new Channel();
         }
 
         private static int _m;
@@ -24,14 +27,18 @@ namespace ReedMullerCode
             }
 
             ErrorLabel.Text = "";
-            VectorLengthLabel.Text = $"Vector length should be {Encoder.GetExpectedVectorLength(_m)}";
+            VectorLengthLabel.Text = $"Vector length should be {Vector.GetExpectedVectorLength(_m)}";
         }
 
         private void EncodeButton_Click(object sender, EventArgs e)
         {
-            var vector = VectorTextBox.Text.ToCharArray().Select(c => int.Parse(c.ToString())).ToList();
+            var vector = new Vector(VectorTextBox.Text.ToCharArray().Select(c => int.Parse(c.ToString())).ToList(), _m);
 
-            Encoder.EncodeVector(vector, _m);
+            var encodedVector = vector.Encode();
+
+            _channel.SendThroughNoisyChannel(encodedVector, 0.7);
+
+
         }
     }
 }

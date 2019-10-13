@@ -2,16 +2,17 @@
 
 namespace ReedMullerCode
 {
-    public class Encoder
+    public class Encoder : IEncoder
     {
-        public static int GetExpectedVectorLength(int m)
-        {
-            return m + 1;
-        }
+        private readonly IGeneratorMatrix _generatorMatrix;
 
-        public static List<int> EncodeVector(List<int> vector, int m)
+        public Encoder(int m)
         {
-            return GeneratorMatrix.MultiplyByGeneratorMatrix(m, vector);
+            _generatorMatrix = new GeneratorMatrix(m);
+        }
+        public List<int> EncodeVector(List<int> vector)
+        {
+            return _generatorMatrix.MultiplyByGeneratorMatrix(vector);
         }
     }
 }

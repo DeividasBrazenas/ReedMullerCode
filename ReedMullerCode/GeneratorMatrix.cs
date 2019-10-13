@@ -3,12 +3,19 @@ using System.Collections.Generic;
 
 namespace ReedMullerCode
 {
-    public class GeneratorMatrix
+    public class GeneratorMatrix : IGeneratorMatrix
     {
-        public static List<int> MultiplyByGeneratorMatrix(int m, List<int> vector)
+        private readonly int _m;
+
+        public GeneratorMatrix(int m)
         {
-            var (rows, columns) = GetDimensions(m);
-            var matrix = CreateGeneratorMatrix(m);
+            _m = m;
+        }
+
+        public List<int> MultiplyByGeneratorMatrix(List<int> vector)
+        {
+            var (rows, columns) = GetDimensions();
+            var matrix = CreateGeneratorMatrix(rows, columns);
 
             var encodedVector = new List<int>(columns);
 
@@ -27,14 +34,13 @@ namespace ReedMullerCode
             return encodedVector;
         }
 
-        private static (int Rows, int Columns) GetDimensions(int m)
+        private (int Rows, int Columns) GetDimensions()
         {
-            return (Rows: m + 1, Columns: 2 * (int)Math.Pow(2, m - 1));
+            return (Rows: _m + 1, Columns: 2 * (int)Math.Pow(2, _m - 1));
         }
 
-        private static int[,] CreateGeneratorMatrix(int m)
+        private int[,] CreateGeneratorMatrix(int rows, int columns)
         {
-            var (rows, columns) = GetDimensions(m);
             var matrix = new int[rows, columns];
 
             for (var i = 0; i < rows; i++)
