@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ReedMullerCode
+namespace ReedMullerCode.Matrices
 {
-    public class GeneratorMatrix : IGeneratorMatrix
+    public class GeneratorMatrix : Matrix
     {
-        private readonly int _m;
-
         public GeneratorMatrix(int m)
         {
-            _m = m;
+            var (rows, columns) = GetDimensions(m);
+            _data = CreateGeneratorMatrix(rows, columns);
         }
 
         public List<int> MultiplyByGeneratorMatrix(List<int> vector)
         {
-            var (rows, columns) = GetDimensions();
-            var matrix = CreateGeneratorMatrix(rows, columns);
+            var rows = this.GetRows();
+            var columns = this.GetColumns();
 
             var encodedVector = new List<int>(columns);
 
@@ -25,7 +24,7 @@ namespace ReedMullerCode
 
                 for (var j = 0; j < rows; j++)
                 {
-                    bit += matrix[j, i] * vector[j];
+                    bit += _data[j, i] * vector[j];
                 }
 
                 encodedVector.Add(bit % 2);
@@ -34,24 +33,24 @@ namespace ReedMullerCode
             return encodedVector;
         }
 
-        private (int Rows, int Columns) GetDimensions()
+        private static (int Rows, int Columns) GetDimensions(int m)
         {
-            return (Rows: _m + 1, Columns: 2 * (int)Math.Pow(2, _m - 1));
+            return (Rows: m + 1, Columns: 2 * (int)Math.Pow(2, m - 1));
         }
 
-        private int[,] CreateGeneratorMatrix(int rows, int columns)
+        private static int[,] CreateGeneratorMatrix(int rows, int columns)
         {
-            var matrix = new int[rows, columns];
+            var data = new int[rows, columns];
 
             for (var i = 0; i < rows; i++)
             {
                 for (var j = 0; j < columns; j++)
                 {
-                    matrix[i, j] = i == 0 ? 1 : (j / (int)Math.Pow(2, i - 1)) % 2;
+                    data[i, j] = i == 0 ? 1 : (j / (int)Math.Pow(2, i - 1)) % 2;
                 }
             }
 
-            return matrix;
+            return data;
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace ReedMullerCode
+namespace ReedMullerCode.Encoder
 {
     public interface IEncoder
     {
-        List<int> EncodeVector(List<int> vector);
+        List<int> Encode(List<int> vector);
     }
 }

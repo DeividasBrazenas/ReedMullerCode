@@ -15,9 +15,9 @@ namespace ReedMullerCode
             _random = new Random();
         }
 
-        public List<int> SendThroughNoisyChannel(Vector vector, double mistakeProbability)
+        public Vector.Vector SendThroughNoisyChannel(Vector.Vector vector, double mistakeProbability)
         {
-            return vector.Bits.Select(bit => _random.Next(0, 100) < mistakeProbability * 100 ? bit : 1 - bit).ToList();
+            return new Vector.Vector(vector.Bits.Select(bit => _random.Next(0, 100) < mistakeProbability * 100 ? bit : 1 - bit).ToList(), vector.M);
         }
     }
 }
