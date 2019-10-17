@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ReedMullerCode.Decoder;
 using ReedMullerCode.Encoder;
 
-namespace ReedMullerCode.Vector
+namespace ReedMullerCode
 {
     public class Vector
     {
@@ -14,6 +15,14 @@ namespace ReedMullerCode.Vector
         public Vector(List<int> bits, int m)
         {
             Bits = bits;
+            _encoder = new Encoder.Encoder(m);
+            _decoder = new Decoder.Decoder(m);
+            M = m;
+        }
+
+        public Vector(string bits, int m)
+        {
+            Bits = bits.ToList().Select(c => int.Parse(c.ToString())).ToList();
             _encoder = new Encoder.Encoder(m);
             _decoder = new Decoder.Decoder(m);
             M = m;

@@ -39,7 +39,6 @@ namespace ReedMullerCode.Decoder
             return decodedVector;
         }
 
-        // TODO: refactor a little bit
         private (int Index, int Value) FindLargestAbsoluteValueInMatrices(List<Matrix> matrices)
         {
             var lists = matrices.Select(matrix => matrix.ConvertToList()).ToList();

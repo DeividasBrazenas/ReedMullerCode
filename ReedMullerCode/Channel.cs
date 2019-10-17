@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace ReedMullerCode
 {
-    class Channel
+    public class Channel
     {
-        private static readonly Random _random;
+        private readonly Random _random;
 
-        static Channel()
+        public Channel()
         {
             _random = new Random();
         }
 
-        public Vector.Vector SendThroughNoisyChannel(Vector.Vector vector, double mistakeProbability)
+        public Vector SendThroughNoisyChannel(Vector vector, double mistakeProbability)
         {
-            return new Vector.Vector(vector.Bits.Select(bit => _random.Next(0, 100) < mistakeProbability * 100 ? bit : 1 - bit).ToList(), vector.M);
+            return new Vector(vector.Bits.Select(bit => _random.Next(0, 100) < mistakeProbability * 100 ? 1 - bit : bit).ToList(), vector.M);
         }
     }
 }

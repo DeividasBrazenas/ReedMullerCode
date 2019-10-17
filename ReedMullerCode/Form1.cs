@@ -20,7 +20,7 @@ namespace ReedMullerCode
 
         private void MSubmitButton_Click(object sender, EventArgs e)
         {
-            var vector = new Vector.Vector(new List<int> {1, 0, 0, 0, 1, 1, 1, 1}, 3).Decode();
+            var vector = new Vector(new List<int> {1, 0, 0, 0, 1, 1, 1, 1}, 3).Decode();
 
             _m = int.Parse(MTextBox.Text);
 
@@ -31,12 +31,12 @@ namespace ReedMullerCode
             }
 
             ErrorLabel.Text = "";
-            VectorLengthLabel.Text = $"Vector length should be {Vector.Vector.GetExpectedVectorLength(_m)}";
+            VectorLengthLabel.Text = $"Vector length should be {Vector.GetExpectedVectorLength(_m)}";
         }
 
         private void EncodeButton_Click(object sender, EventArgs e)
         {
-            var vector = new Vector.Vector(VectorTextBox.Text.ToCharArray().Select(c => int.Parse(c.ToString())).ToList(), _m);
+            var vector = new Vector(VectorTextBox.Text.ToCharArray().Select(c => int.Parse(c.ToString())).ToList(), _m);
 
             var encodedVector = vector.Encode();
 
