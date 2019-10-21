@@ -8,7 +8,7 @@ namespace ReedMullerCode.Matrices
         public GeneratorMatrix(int m)
         {
             var (rows, columns) = GetDimensions(m);
-            _data = CreateGeneratorMatrix(rows, columns);
+            Data = CreateGeneratorMatrix(rows, columns);
         }
 
         public List<int> MultiplyByGeneratorMatrix(List<int> vector)
@@ -24,7 +24,7 @@ namespace ReedMullerCode.Matrices
 
                 for (var j = 0; j < rows; j++)
                 {
-                    bit += _data[j, i] * vector[j];
+                    bit += Data[j][i] * vector[j];
                 }
 
                 encodedVector.Add(bit % 2);
@@ -35,18 +35,19 @@ namespace ReedMullerCode.Matrices
 
         private static (int Rows, int Columns) GetDimensions(int m)
         {
-            return (Rows: m + 1, Columns: 2 * (int)Math.Pow(2, m - 1));
+            return (Rows: m + 1, Columns: 2 * (int) Math.Pow(2, m - 1));
         }
 
-        private static int[,] CreateGeneratorMatrix(int rows, int columns)
+        private static int[][] CreateGeneratorMatrix(int rows, int columns)
         {
-            var data = new int[rows, columns];
+            var data = new int[rows][];
 
             for (var i = 0; i < rows; i++)
             {
+                data[i] = new int[columns];
                 for (var j = 0; j < columns; j++)
                 {
-                    data[i, j] = i == 0 ? 1 : (j / (int)Math.Pow(2, i - 1)) % 2;
+                    data[i][j] = i == 0 ? 1 : (j / (int) Math.Pow(2, i - 1)) % 2;
                 }
             }
 

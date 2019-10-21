@@ -2,30 +2,25 @@
 {
     public class Matrix
     {
-        protected int[,] _data;
+        public int[][] Data;
 
         public Matrix()
         {
         }
 
-        public Matrix(int[,] data)
+        public Matrix(int[][] data)
         {
-            _data = data;
-        }
-
-        public int[,] GetData()
-        {
-            return _data;
+            Data = data;
         }
 
         public int GetRows()
         {
-            return _data.GetLength(0);
+            return Data.GetLength(0);
         }
 
         public int GetColumns()
         {
-            return _data.GetLength(1);
+            return Data[0].GetLength(0);
         }
     }
 }

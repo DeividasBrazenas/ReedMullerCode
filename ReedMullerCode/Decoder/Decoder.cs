@@ -24,6 +24,7 @@ namespace ReedMullerCode.Decoder
             for (var i = 2; i <= _m; i++)
             {
                 wMatrices.Add(wMatrices[i - 2].MultiplyBy(new HMatrix(i, _m)));
+
             }
 
             var (index, value) = FindLargestAbsoluteValueInMatrices(wMatrices);

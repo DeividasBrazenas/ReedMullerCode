@@ -4,16 +4,17 @@
     {
         public IMatrix(int size)
         {
-            _data = GenerateIMatrix(size);
+            Data = GenerateIMatrix(size);
         }
 
-        private int[,] GenerateIMatrix(int size)
+        private int[][] GenerateIMatrix(int size)
         {
-            var matrix = new int[size, size];
+            var matrix = new int[size][];
 
             for (var i = 0; i < size; i++)
             {
-                matrix[i, i] = 1;
+                matrix[i] = new int[size];
+                matrix[i][i] = 1;
             }
 
             return matrix;

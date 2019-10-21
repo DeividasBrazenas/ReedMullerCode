@@ -8,10 +8,13 @@ namespace ReedMullerCode.Decoder
     {
         public static Matrix ConvertToMatrix(this List<int> bits)
         {
-            var data = new int[1, bits.Count];
+            var data = new int[][]
+            {
+                new int[bits.Count]
+            };
 
             for (var i = 0; i < bits.Count; i++)
-                data[0, i] = bits[i];
+                data[0][i] = bits[i];
 
             return new Matrix(data);
         }
@@ -26,7 +29,7 @@ namespace ReedMullerCode.Decoder
             var list = new List<int>();
 
             for (var i = 0; i < matrix.GetColumns(); i++)
-                list.Add(matrix.GetData()[0, i]);
+                list.Add(matrix.Data[0][i]);
 
             return list;
         }
