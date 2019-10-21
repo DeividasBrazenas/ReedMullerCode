@@ -4,6 +4,6 @@ namespace ReedMullerCode.Encoder
 {
     public interface IEncoder
     {
-        List<int> Encode(List<int> vector);
+        List<int> Encode(List<int> bits);
     }
 }

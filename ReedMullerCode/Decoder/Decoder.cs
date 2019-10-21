@@ -19,12 +19,11 @@ namespace ReedMullerCode.Decoder
             var wMatrices = new List<Matrix>();
 
             var replacedVector = bits.Select(x => x == 0 ? -1 : 1).ToList();
-            wMatrices.Add(replacedVector.ConvertToMatrix().MultiplyBy(new HMatrix(1, _m)));
+            wMatrices.Add(replacedVector.ConvertToMatrix().MultiplyBy(HMatrix.GenerateHMatrix(1, _m)));
 
             for (var i = 2; i <= _m; i++)
             {
-                wMatrices.Add(wMatrices[i - 2].MultiplyBy(new HMatrix(i, _m)));
-
+                wMatrices.Add(wMatrices[i - 2].MultiplyBy(HMatrix.GenerateHMatrix(i, _m)));
             }
 
             var (index, value) = FindLargestAbsoluteValueInMatrices(wMatrices);

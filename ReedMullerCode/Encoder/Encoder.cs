@@ -11,9 +11,9 @@ namespace ReedMullerCode.Encoder
         {
             _generatorMatrix = new GeneratorMatrix(m);
         }
-        public List<int> Encode(List<int> vector)
+        public List<int> Encode(List<int> bits)
         {
-            return _generatorMatrix.MultiplyByGeneratorMatrix(vector);
+            return _generatorMatrix.MultiplyByGeneratorMatrix(bits);
         }
     }
 }

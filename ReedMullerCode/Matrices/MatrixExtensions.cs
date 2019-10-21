@@ -14,38 +14,16 @@ namespace ReedMullerCode.Matrices
                                     $"Second matrix dimensions : [{matrixToMultiplyBy.GetRows()}, {matrixToMultiplyBy.GetColumns()}]");
             }
 
-            var resultMatrix = MatrixCreate(matrix.GetRows(), matrix.GetColumns());
-
-            Transpose(matrixToMultiplyBy);
+            var resultMatrix = MatrixCreate(matrix.GetRows(), matrixToMultiplyBy.GetColumns());
 
             Parallel.For(0, matrix.GetRows(), i =>
             {
                 for (var j = 0; j < matrixToMultiplyBy.GetColumns(); j++)
                     for (var k = 0; k < matrix.GetColumns(); k++)
-                        resultMatrix[i][j] += matrix.Data[i][k] * matrixToMultiplyBy.Data[j][k];
+                        resultMatrix[i][j] += matrix.Data[i][k] * matrixToMultiplyBy.Data[k][j];
             });
 
             return new Matrix(resultMatrix);
-        }
-
-        public static void Transpose(Matrix matrix)
-        {
-            // This is transposed matrix. cols -> rows / rows -> cols
-            var rows = matrix.GetColumns();
-            var cols = matrix.GetRows();
-
-            var result = new int[rows][];
-
-            for (var i = 0; i < cols; i++)
-            {
-                for (var j = 0; j < rows; j++)
-                {
-                    result[j] = result[j] ?? new int[cols];
-                    result[j][i] = matrix.Data[i][j];
-                }
-            }
-
-            matrix.Data = result;
         }
 
         public static Matrix GetKroneckerProduct(this Matrix matrix, Matrix matrixToMultiplyBy)

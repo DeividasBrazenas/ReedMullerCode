@@ -35,7 +35,7 @@ namespace ReedMullerCode.Matrices
 
         private static (int Rows, int Columns) GetDimensions(int m)
         {
-            return (Rows: m + 1, Columns: 2 * (int) Math.Pow(2, m - 1));
+            return (Rows: m + 1, Columns: 2 * (int)Math.Pow(2, m - 1));
         }
 
         private static int[][] CreateGeneratorMatrix(int rows, int columns)
@@ -47,7 +47,7 @@ namespace ReedMullerCode.Matrices
                 data[i] = new int[columns];
                 for (var j = 0; j < columns; j++)
                 {
-                    data[i][j] = i == 0 ? 1 : (j / (int) Math.Pow(2, i - 1)) % 2;
+                    data[i][j] = i == 0 ? 1 : (j / (int)Math.Pow(2, i - 1)) % 2;
                 }
             }
 
