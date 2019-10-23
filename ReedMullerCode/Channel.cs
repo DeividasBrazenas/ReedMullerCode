@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ReedMullerCode
 {
@@ -20,14 +22,16 @@ namespace ReedMullerCode
 
         public string SendThroughNoisyChannel(string str, double mistakeProbability)
         {
-            var strFromChannel = "";
+            var sb = new StringBuilder();
 
-            for (var i = 0; i < str.Length; i++)
-                strFromChannel += _random.Next(0, 100) < mistakeProbability * 100
-                    ? (1 - int.Parse(str[i].ToString())).ToString()
-                    : str[i].ToString();
+            foreach (var c in str)
+            {
+                sb.Append(_random.Next(0, 100) < mistakeProbability * 100
+                    ? (1 - int.Parse(c.ToString())).ToString()
+                    : c.ToString());
+            }
 
-            return strFromChannel;
+            return sb.ToString();
         }
 
         public List<int> GetErrorPositions(Vector vector, Vector vectorAfterChannel)

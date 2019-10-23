@@ -19,9 +19,9 @@ namespace ReedMullerCode.Matrices
                 return hMatrixCached;
             }
 
-            var hMatrix = new IMatrix((int)Math.Pow(2, m - i))
+            var hMatrix = IMatrix.GenerateIMatrix((int)Math.Pow(2, m - i))
                 .GetKroneckerProduct(new Matrix(new int[][] { new[] { 1, 1 }, new[] { 1, -1 } }))
-                .GetKroneckerProduct(new IMatrix((int)Math.Pow(2, i - 1)));
+                .GetKroneckerProduct(IMatrix.GenerateIMatrix((int)Math.Pow(2, i - 1)));
 
             _hMatrices.TryAdd((i, m), hMatrix);
 

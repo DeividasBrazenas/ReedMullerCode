@@ -70,8 +70,8 @@
             this.mLabelTextTab = new System.Windows.Forms.Label();
             this.tabPicture = new System.Windows.Forms.TabPage();
             this.inputPictureBox = new System.Windows.Forms.PictureBox();
-            this.withCodingPictureBox = new System.Windows.Forms.PictureBox();
-            this.pictureBox = new System.Windows.Forms.PictureBox();
+            this.pictureBoxWithCoding = new System.Windows.Forms.PictureBox();
+            this.pictureBoxWithoutCoding = new System.Windows.Forms.PictureBox();
             this.mPictureLengthLabel = new System.Windows.Forms.Label();
             this.openFileButton = new System.Windows.Forms.Button();
             this.mPictureSubmit = new System.Windows.Forms.Button();
@@ -83,13 +83,14 @@
             this.pictureErrorRateText = new System.Windows.Forms.TextBox();
             this.pictureErrorRateLabel = new System.Windows.Forms.Label();
             this.pictureSend = new System.Windows.Forms.Button();
+            this.pictureStartAgainButton = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabVector.SuspendLayout();
             this.tabText.SuspendLayout();
             this.tabPicture.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.inputPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.withCodingPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithCoding)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithoutCoding)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl
@@ -362,7 +363,7 @@
             this.tabText.Location = new System.Drawing.Point(4, 22);
             this.tabText.Name = "tabText";
             this.tabText.Padding = new System.Windows.Forms.Padding(3);
-            this.tabText.Size = new System.Drawing.Size(787, 674);
+            this.tabText.Size = new System.Drawing.Size(787, 544);
             this.tabText.TabIndex = 1;
             this.tabText.Text = "Text";
             this.tabText.UseVisualStyleBackColor = true;
@@ -510,6 +511,7 @@
             // 
             // tabPicture
             // 
+            this.tabPicture.Controls.Add(this.pictureStartAgainButton);
             this.tabPicture.Controls.Add(this.pictureErrorRateText);
             this.tabPicture.Controls.Add(this.pictureErrorRateLabel);
             this.tabPicture.Controls.Add(this.pictureSend);
@@ -517,8 +519,8 @@
             this.tabPicture.Controls.Add(this.pictureWithCodingLabel);
             this.tabPicture.Controls.Add(this.inputPictureLabel);
             this.tabPicture.Controls.Add(this.inputPictureBox);
-            this.tabPicture.Controls.Add(this.withCodingPictureBox);
-            this.tabPicture.Controls.Add(this.pictureBox);
+            this.tabPicture.Controls.Add(this.pictureBoxWithCoding);
+            this.tabPicture.Controls.Add(this.pictureBoxWithoutCoding);
             this.tabPicture.Controls.Add(this.mPictureLengthLabel);
             this.tabPicture.Controls.Add(this.openFileButton);
             this.tabPicture.Controls.Add(this.mPictureSubmit);
@@ -539,21 +541,21 @@
             this.inputPictureBox.TabIndex = 9;
             this.inputPictureBox.TabStop = false;
             // 
-            // withCodingPictureBox
+            // pictureBoxWithCoding
             // 
-            this.withCodingPictureBox.Location = new System.Drawing.Point(500, 50);
-            this.withCodingPictureBox.Name = "withCodingPictureBox";
-            this.withCodingPictureBox.Size = new System.Drawing.Size(200, 200);
-            this.withCodingPictureBox.TabIndex = 8;
-            this.withCodingPictureBox.TabStop = false;
+            this.pictureBoxWithCoding.Location = new System.Drawing.Point(500, 50);
+            this.pictureBoxWithCoding.Name = "pictureBoxWithCoding";
+            this.pictureBoxWithCoding.Size = new System.Drawing.Size(200, 200);
+            this.pictureBoxWithCoding.TabIndex = 8;
+            this.pictureBoxWithCoding.TabStop = false;
             // 
-            // pictureBox
+            // pictureBoxWithoutCoding
             // 
-            this.pictureBox.Location = new System.Drawing.Point(500, 300);
-            this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(200, 200);
-            this.pictureBox.TabIndex = 7;
-            this.pictureBox.TabStop = false;
+            this.pictureBoxWithoutCoding.Location = new System.Drawing.Point(500, 300);
+            this.pictureBoxWithoutCoding.Name = "pictureBoxWithoutCoding";
+            this.pictureBoxWithoutCoding.Size = new System.Drawing.Size(200, 200);
+            this.pictureBoxWithoutCoding.TabIndex = 7;
+            this.pictureBoxWithoutCoding.TabStop = false;
             // 
             // mPictureLengthLabel
             // 
@@ -661,6 +663,18 @@
             this.pictureSend.Text = "Send";
             this.pictureSend.UseVisualStyleBackColor = true;
             this.pictureSend.Visible = false;
+            this.pictureSend.Click += new System.EventHandler(this.pictureSend_Click);
+            // 
+            // pictureStartAgainButton
+            // 
+            this.pictureStartAgainButton.Location = new System.Drawing.Point(356, 500);
+            this.pictureStartAgainButton.Name = "pictureStartAgainButton";
+            this.pictureStartAgainButton.Size = new System.Drawing.Size(75, 23);
+            this.pictureStartAgainButton.TabIndex = 23;
+            this.pictureStartAgainButton.Text = "Start again";
+            this.pictureStartAgainButton.UseVisualStyleBackColor = true;
+            this.pictureStartAgainButton.Visible = false;
+            this.pictureStartAgainButton.Click += new System.EventHandler(this.pictureStartAgainButton_Click);
             // 
             // MainWindow
             // 
@@ -678,8 +692,8 @@
             this.tabPicture.ResumeLayout(false);
             this.tabPicture.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.inputPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.withCodingPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithCoding)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWithoutCoding)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -732,15 +746,16 @@
         private System.Windows.Forms.Button textStartAgainButton;
         private System.Windows.Forms.Button openFileButton;
         private System.Windows.Forms.Label mPictureLengthLabel;
-        private System.Windows.Forms.PictureBox pictureBox;
+        private System.Windows.Forms.PictureBox pictureBoxWithoutCoding;
         private System.Windows.Forms.PictureBox inputPictureBox;
-        private System.Windows.Forms.PictureBox withCodingPictureBox;
+        private System.Windows.Forms.PictureBox pictureBoxWithCoding;
         private System.Windows.Forms.Label pictureWithoutCodingLabel;
         private System.Windows.Forms.Label pictureWithCodingLabel;
         private System.Windows.Forms.Label inputPictureLabel;
         private System.Windows.Forms.TextBox pictureErrorRateText;
         private System.Windows.Forms.Label pictureErrorRateLabel;
         private System.Windows.Forms.Button pictureSend;
+        private System.Windows.Forms.Button pictureStartAgainButton;
     }
 }
 

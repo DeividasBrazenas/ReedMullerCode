@@ -1,14 +1,18 @@
-﻿namespace ReedMullerCode.Matrices
+﻿using System.Collections.Concurrent;
+
+namespace ReedMullerCode.Matrices
 {
     public class IMatrix : Matrix
     {
-        public IMatrix(int size)
-        {
-            Data = GenerateIMatrix(size);
-        }
+        private static ConcurrentDictionary<int, Matrix> _iMatrices = new ConcurrentDictionary<int, Matrix>();
 
-        private int[][] GenerateIMatrix(int size)
+        public static Matrix GenerateIMatrix(int size)
         {
+            if (_iMatrices.TryGetValue(size, out var iMatrixCached))
+            {
+                return iMatrixCached;
+            }
+
             var matrix = new int[size][];
 
             for (var i = 0; i < size; i++)
@@ -17,7 +21,9 @@
                 matrix[i][i] = 1;
             }
 
-            return matrix;
+            _iMatrices.TryAdd(size, new Matrix(matrix));
+
+            return new Matrix(matrix);
         }
     }
 }

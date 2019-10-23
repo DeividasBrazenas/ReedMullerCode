@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ReedMullerCode
@@ -179,8 +181,10 @@ namespace ReedMullerCode
 
             textErrorLabel.Text = "";
             var mistakeProbability = double.Parse(textErrorRateInput.Text);
-            var stringWithCoding = HandleTextWithCoding(textInput.Text, _mText, mistakeProbability);
-            var stringWithoutCoding = HandleTextWithoutCoding(textInput.Text, mistakeProbability);
+            var binaryString = ConvertStringToBinary(textInput.Text);
+
+            var stringWithCoding = HandleTextWithCoding(binaryString, _mText, mistakeProbability);
+            var stringWithoutCoding = HandleTextWithoutCoding(binaryString, mistakeProbability);
 
             textWithCodingLabel.Visible = true;
             textWithCodingOutput.Visible = true;
@@ -196,9 +200,8 @@ namespace ReedMullerCode
             TextHideEverything();
         }
 
-        private string HandleTextWithCoding(string text, int m, double mistakeProbability)
+        private string HandleTextWithCoding(string binaryString, int m, double mistakeProbability)
         {
-            var binaryString = ConvertStringToBinary(text);
             var vectors = ConvertStringToVectors(binaryString, m, out var appendedBits);
 
             var encodedVectors = vectors.Select(x => x.Encode()).ToList();
@@ -220,10 +223,8 @@ namespace ReedMullerCode
             return ConvertBinaryToString(decodedBinaryString);
         }
 
-        private string HandleTextWithoutCoding(string text, double mistakeProbability)
+        private string HandleTextWithoutCoding(string binaryString, double mistakeProbability)
         {
-            var binaryString = ConvertStringToBinary(text);
-
             var stringFromChannel = _channel.SendThroughNoisyChannel(binaryString, mistakeProbability);
 
             return ConvertBinaryToString(stringFromChannel);
@@ -288,6 +289,8 @@ namespace ReedMullerCode
 
         private void mPictureSubmit_Click(object sender, EventArgs e)
         {
+            PictureHideEverything();
+
             if (!Regex.IsMatch(mPictureText.Text, "^[0-9]{1,}$"))
             {
                 mPictureLengthLabel.Text = $"m should be a numeric value";
@@ -302,9 +305,7 @@ namespace ReedMullerCode
 
         private void openFileButton_Click(object sender, EventArgs e)
         {
-            var ofd = new OpenFileDialog();
-
-            ofd.Filter = "BMP|*.bmp";
+            var ofd = new OpenFileDialog {Filter = "BMP|*.bmp"};
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -316,7 +317,46 @@ namespace ReedMullerCode
             pictureSend.Visible = true;
             inputPictureLabel.Visible = true;
             inputPictureBox.Visible = true;
+            inputPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             inputPictureBox.Image = _pictureBitmap;
+        }
+
+        private void pictureSend_Click(object sender, EventArgs e)
+        {
+            if (!Regex.IsMatch(pictureErrorRateText.Text, "^(0)$|^([0].[0-9]{1,})|^(1)$|^(1.(0){1,})$"))
+            {
+                pictureErrorRateLabel.Text = "Error rate should be a value between 0.0 and 1.0";
+                return;
+            }
+
+            pictureErrorRateLabel.Text = "";
+            var mistakeProbability = double.Parse(pictureErrorRateText.Text);
+
+            var inputPictureBits = ConvertImageToBinaryString(_pictureBitmap);
+
+            var binaryStringWithoutHeader = RemoveBmpHeaderFromBitArray(inputPictureBits, out var header);
+
+            var binaryPictureWithCoding = HandlePictureWithCoding(binaryStringWithoutHeader, _mPicture, mistakeProbability);
+            var binaryPictureWithoutCoding = HandlePictureWithoutCoding(binaryStringWithoutHeader, mistakeProbability);
+
+            var pictureWithCoding = ConvertBinaryStringToImage(header + binaryPictureWithCoding);
+            var pictureWithoutCoding = ConvertBinaryStringToImage(header + binaryPictureWithoutCoding);
+
+            pictureWithCodingLabel.Visible = true;
+            pictureBoxWithCoding.Visible = true;
+            pictureBoxWithCoding.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBoxWithCoding.Image = pictureWithCoding;
+
+            pictureWithoutCodingLabel.Visible = true;
+            pictureBoxWithoutCoding.Visible = true;
+            pictureBoxWithoutCoding.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBoxWithoutCoding.Image = pictureWithoutCoding;
+            pictureStartAgainButton.Visible = true;
+        }
+
+        private void pictureStartAgainButton_Click(object sender, EventArgs e)
+        {
+            PictureHideEverything();
         }
 
         private string ConvertImageToBinaryString(Image img)
@@ -324,7 +364,75 @@ namespace ReedMullerCode
             var converter = new ImageConverter();
             var bytes = (byte[])converter.ConvertTo(img, typeof(byte[]));
 
-            return string.Join("", bytes.Select(x => Convert.ToString(x, 2).PadLeft(8, '0')));
+            return string.Join("", bytes?.Select(x => Convert.ToString(x, 2).PadLeft(8, '0')));
+        }
+
+        private Image ConvertBinaryStringToImage(string binaryString)
+        {
+            var numOfBytes = binaryString.Length / 8;
+            var bytes = new byte[numOfBytes];
+
+            for (var i = 0; i < numOfBytes; ++i)
+            {
+                bytes[i] = Convert.ToByte(binaryString.Substring(8 * i, 8), 2);
+            }
+
+            Bitmap image;
+            using (var ms = new MemoryStream(bytes))
+            {
+                image = new Bitmap(ms);
+            }
+
+            return image;
+        }
+
+        private string RemoveBmpHeaderFromBitArray(string binaryString, out string header)
+        {
+            header = binaryString.Substring(0, 54 * 8);
+
+            return binaryString.Substring(54 * 8);
+        }
+
+        private string HandlePictureWithCoding(string binaryString, int m, double mistakeProbability)
+        {
+            var vectors = ConvertStringToVectors(binaryString, m, out var appendedBits);
+
+            var encodedVectors = new Vector[vectors.Count];
+            Parallel.For(0, encodedVectors.Length, i => { encodedVectors[i] = vectors[i].Encode(); });
+
+            var vectorsFromChannel = new List<Vector>();
+            for (var i = 0; i < encodedVectors.Length - 1; i++)
+            {
+                vectorsFromChannel.Add(_channel.SendThroughNoisyChannel(encodedVectors[i], mistakeProbability));
+            }
+
+            vectorsFromChannel.Add(appendedBits == 0
+                ? _channel.SendThroughNoisyChannel(encodedVectors[encodedVectors.Length - 1], mistakeProbability)
+                : encodedVectors[encodedVectors.Length - 1]);
+
+            var decodedVectors = new Vector[vectorsFromChannel.Count];
+
+            Parallel.For(0, decodedVectors.Length, i => { decodedVectors[i] = vectorsFromChannel[i].Decode(); });
+
+            return ConvertVectorsToString(decodedVectors.ToList(), appendedBits);
+        }
+
+        private string HandlePictureWithoutCoding(string binaryString, double mistakeProbability)
+        {
+            return _channel.SendThroughNoisyChannel(binaryString, mistakeProbability);
+        }
+
+        private void PictureHideEverything()
+        {
+            pictureErrorRateLabel.Visible = false;
+            pictureErrorRateText.Visible = false;
+            pictureSend.Visible = false;
+            inputPictureLabel.Visible = false;
+            inputPictureBox.Visible = false;
+            pictureWithCodingLabel.Visible = false;
+            pictureBoxWithCoding.Visible = false;
+            pictureWithoutCodingLabel.Visible = false;
+            pictureBoxWithoutCoding.Visible = false;
         }
     }
 }
