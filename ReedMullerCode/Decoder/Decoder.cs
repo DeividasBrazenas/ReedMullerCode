@@ -1,92 +1,51 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using ReedMullerCode.Matrices;
 
 namespace ReedMullerCode.Decoder
 {
-    public class Decoder : IDecoder
+    public class Decoder
     {
-        private readonly int _m;
-
-        public Decoder(int m)
+        public static int[] Decode(int[] bits, int m)
         {
-            _m = m;
-        }
-
-        public List<int> Decode(List<int> bits)
-        {
-            var wMatrices = new List<Matrix>();
-
             var replacedVector = bits.Select(x => x == 0 ? -1 : 1).ToList();
-            wMatrices.Add(replacedVector.ConvertToMatrix().MultiplyBy(HMatrix.GenerateHMatrix(1, _m)));
 
-            for (var i = 2; i <= _m; i++)
+            var wMatrix = WMatrix.GenerateWMatrix(replacedVector.ConvertToMatrix(), 1, m);
+
+            for (var i = 2; i <= m; i++)
             {
-                wMatrices.Add(wMatrices[i - 2].MultiplyBy(HMatrix.GenerateHMatrix(i, _m)));
+                wMatrix = WMatrix.GenerateWMatrix(wMatrix, i, m);
             }
 
-            var (index, value) = FindLargestAbsoluteValueInMatrices(wMatrices);
-            var decodedVector = ConvertToBinaryReversed(index);
-
-            if (value > 0)
-            {
-                decodedVector.Insert(0, 1);
-                return decodedVector;
-            }
-
-            decodedVector.Insert(0, 0);
-            return decodedVector;
+            return DecodeVector(wMatrix, m);
         }
 
-        private (int Index, int Value) FindLargestAbsoluteValueInMatrices(List<Matrix> matrices)
+        private static int[] DecodeVector(Matrix wMatrix, int m)
         {
-            var lists = matrices.Select(matrix => matrix.ConvertToList()).ToList();
+            var vector = wMatrix.Data[0];
 
-            var maxAbsoluteValueOfEachList = new List<int>();
-            foreach (var list in lists)
-            {
-                var index = 0;
+            var min = vector.Min();
+            var max = vector.Max();
 
-                for (var i = 1; i < list.Count; i++)
-                {
-                    index = Math.Abs(list[index]) > Math.Abs(list[i]) ? index : i;
-                }
+            var value = Math.Abs(max) > Math.Abs(min) ? max : min;
+            var index = Array.IndexOf(vector, value);
 
-                maxAbsoluteValueOfEachList.Add(list[index]);
-            }
-
-            var listIndex = 0;
-            for (var i = 1; i < maxAbsoluteValueOfEachList.Count; i++)
-            {
-                listIndex = Math.Abs(maxAbsoluteValueOfEachList[listIndex]) > Math.Abs(maxAbsoluteValueOfEachList[i]) ? listIndex : i;
-            }
-
-            var valueIndex = 0;
-            var listWithMaxAbsoluteValue = lists[listIndex];
-            for (var i = 1; i < listWithMaxAbsoluteValue.Count; i++)
-            {
-                valueIndex = Math.Abs(listWithMaxAbsoluteValue[valueIndex]) > Math.Abs(listWithMaxAbsoluteValue[i]) ? valueIndex : i;
-            }
-
-            return (valueIndex, listWithMaxAbsoluteValue[valueIndex]);
-        }
-
-        private List<int> ConvertToBinaryReversed(int value)
-        {
-            var bitsString = Convert.ToString(value, 2);
-            var countOfZerosToAdd = _m - bitsString.Length - 1;
+            var bitsString = Convert.ToString(index, 2);
+            var countOfZerosToAdd = m - bitsString.Length - 1;
 
             for (var i = 0; i <= countOfZerosToAdd; i++)
             {
                 bitsString = bitsString.Insert(0, "0");
             }
 
-            var bits = bitsString.ToCharArray().Select(x => int.Parse(x.ToString())).ToList();
+            var bits = bitsString.ToCharArray().Select(x => int.Parse(x.ToString()));
 
-            bits.Reverse();
+            var reversed = bits.Reverse().ToList();
+            reversed.Insert(0, value > 0 ? 1 : 0);
 
-            return bits;
+            return reversed.ToArray();
         }
     }
 }

@@ -1,19 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using ReedMullerCode.Matrices;
 
 namespace ReedMullerCode.Encoder
 {
-    public class Encoder : IEncoder
+    public class Encoder
     {
-        private readonly GeneratorMatrix _generatorMatrix;
+        private static ConcurrentDictionary<(int, string), int[]> _encodedVectors = new ConcurrentDictionary<(int, string), int[]>();
+        
+        public static int[] Encode(int[] bits, int m)
+        {
+            if (_encodedVectors.TryGetValue((m, string.Join("", bits)), out var encodedVectorCached))
+            {
+                return encodedVectorCached;
+            }
 
-        public Encoder(int m)
-        {
-            _generatorMatrix = new GeneratorMatrix(m);
-        }
-        public List<int> Encode(List<int> bits)
-        {
-            return _generatorMatrix.MultiplyByGeneratorMatrix(bits);
+            var encodedVector = GeneratorMatrix.MultiplyByGeneratorMatrix(bits, m);
+
+            _encodedVectors.TryAdd((m, string.Join("", bits)), encodedVector);
+
+            return encodedVector;
         }
     }
 }

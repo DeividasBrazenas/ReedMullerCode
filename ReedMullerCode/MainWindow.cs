@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -63,7 +65,7 @@ namespace ReedMullerCode
 
             vectorLengthErrorLabel.Text = "";
 
-            _vector = new Vector(vectorTextBox.Text.Select(c => int.Parse(c.ToString())).ToList(), _mVector);
+            _vector = new Vector(vectorTextBox.Text.Select(c => int.Parse(c.ToString())).ToArray(), _mVector);
             _encodedVector = _vector.Encode();
 
             encodedVectorLabel.Visible = true;
@@ -100,9 +102,9 @@ namespace ReedMullerCode
 
         private void vectorDecodeButton_Click(object sender, EventArgs e)
         {
-            if (_encodedVector.Bits.Count != vectorFromChannelText.Text.Length)
+            if (_encodedVector.Bits.Length != vectorFromChannelText.Text.Length)
             {
-                vectorFromChannelError.Text = $"Length of vector to decode should be {_encodedVector.Bits.Count}." +
+                vectorFromChannelError.Text = $"Length of vector to decode should be {_encodedVector.Bits.Length}." +
                                               $" Actual length is {vectorFromChannelText.Text.Length}";
                 return;
             }
@@ -115,7 +117,7 @@ namespace ReedMullerCode
 
             vectorFromChannelError.Text = "";
 
-            _vectorFromChannel = new Vector(vectorFromChannelText.Text.Select(c => int.Parse(c.ToString())).ToList(), _mVector);
+            _vectorFromChannel = new Vector(vectorFromChannelText.Text.Select(c => int.Parse(c.ToString())).ToArray(), _mVector);
             var decodedVector = _vectorFromChannel.Decode();
 
             decodedVectorLabel.Visible = true;
@@ -305,7 +307,7 @@ namespace ReedMullerCode
 
         private void openFileButton_Click(object sender, EventArgs e)
         {
-            var ofd = new OpenFileDialog {Filter = "BMP|*.bmp"};
+            var ofd = new OpenFileDialog { Filter = "BMP|*.bmp" };
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -325,11 +327,14 @@ namespace ReedMullerCode
         {
             if (!Regex.IsMatch(pictureErrorRateText.Text, "^(0)$|^([0].[0-9]{1,})|^(1)$|^(1.(0){1,})$"))
             {
-                pictureErrorRateLabel.Text = "Error rate should be a value between 0.0 and 1.0";
+                pictureErrorLabel.Text = "Error rate should be a value between 0.0 and 1.0";
                 return;
             }
 
-            pictureErrorRateLabel.Text = "";
+            var sw = new Stopwatch();
+            sw.Start();
+
+            Cursor.Current = Cursors.WaitCursor;
             var mistakeProbability = double.Parse(pictureErrorRateText.Text);
 
             var inputPictureBits = ConvertImageToBinaryString(_pictureBitmap);
@@ -342,6 +347,9 @@ namespace ReedMullerCode
             var pictureWithCoding = ConvertBinaryStringToImage(header + binaryPictureWithCoding);
             var pictureWithoutCoding = ConvertBinaryStringToImage(header + binaryPictureWithoutCoding);
 
+            sw.Stop();
+            Cursor.Current = Cursors.Default;
+            pictureErrorLabel.Text = $"Elapsed time: {sw.Elapsed}";
             pictureWithCodingLabel.Visible = true;
             pictureBoxWithCoding.Visible = true;
             pictureBoxWithCoding.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -372,16 +380,13 @@ namespace ReedMullerCode
             var numOfBytes = binaryString.Length / 8;
             var bytes = new byte[numOfBytes];
 
-            for (var i = 0; i < numOfBytes; ++i)
+            for (var i = 0; i < numOfBytes; i++)
             {
                 bytes[i] = Convert.ToByte(binaryString.Substring(8 * i, 8), 2);
             }
 
-            Bitmap image;
-            using (var ms = new MemoryStream(bytes))
-            {
-                image = new Bitmap(ms);
-            }
+            ImageConverter imageConverter = new ImageConverter();
+            Image image = imageConverter.ConvertFrom(bytes) as Image;
 
             return image;
         }
@@ -424,6 +429,7 @@ namespace ReedMullerCode
 
         private void PictureHideEverything()
         {
+            pictureErrorLabel.Text = "";
             pictureErrorRateLabel.Visible = false;
             pictureErrorRateText.Visible = false;
             pictureSend.Visible = false;
@@ -433,6 +439,7 @@ namespace ReedMullerCode
             pictureBoxWithCoding.Visible = false;
             pictureWithoutCodingLabel.Visible = false;
             pictureBoxWithoutCoding.Visible = false;
+            pictureStartAgainButton.Visible = false;
         }
     }
 }

@@ -18,20 +18,5 @@ namespace ReedMullerCode.Decoder
 
             return new Matrix(data);
         }
-
-        public static List<int> ConvertToList(this Matrix matrix)
-        {
-            if (matrix.GetRows() != 1)
-            {
-                throw new Exception("Cannot convert matrix to list. Row count exceeds 1");
-            }
-
-            var list = new List<int>();
-
-            for (var i = 0; i < matrix.GetColumns(); i++)
-                list.Add(matrix.Data[0][i]);
-
-            return list;
-        }
     }
 }

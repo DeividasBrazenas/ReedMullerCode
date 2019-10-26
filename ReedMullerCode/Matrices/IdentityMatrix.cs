@@ -2,11 +2,11 @@
 
 namespace ReedMullerCode.Matrices
 {
-    public class IMatrix : Matrix
+    public class IdentityMatrix : Matrix
     {
         private static ConcurrentDictionary<int, Matrix> _iMatrices = new ConcurrentDictionary<int, Matrix>();
 
-        public static Matrix GenerateIMatrix(int size)
+        public static Matrix GenerateIdentityMatrix(int size)
         {
             if (_iMatrices.TryGetValue(size, out var iMatrixCached))
             {

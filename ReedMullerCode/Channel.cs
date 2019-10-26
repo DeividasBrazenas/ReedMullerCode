@@ -17,7 +17,7 @@ namespace ReedMullerCode
 
         public Vector SendThroughNoisyChannel(Vector vector, double mistakeProbability)
         {
-            return new Vector(vector.Bits.Select(bit => _random.Next(0, 100) < mistakeProbability * 100 ? 1 - bit : bit).ToList(), vector.M);
+            return new Vector(vector.Bits.Select(bit => _random.Next(0, 100) < mistakeProbability * 100 ? 1 - bit : bit).ToArray(), vector.M);
         }
 
         public string SendThroughNoisyChannel(string str, double mistakeProbability)
@@ -38,7 +38,7 @@ namespace ReedMullerCode
         {
             var positions = new List<int>();
 
-            for (var i = 0; i < vector.Bits.Count; i++)
+            for (var i = 0; i < vector.Bits.Length; i++)
             {
                 if (vector.Bits[i] != vectorAfterChannel.Bits[i])
                     positions.Add(i);

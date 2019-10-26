@@ -1,22 +1,26 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace ReedMullerCode.Matrices
 {
-    public class GeneratorMatrix : Matrix
+    public class GeneratorMatrix
     {
-        public GeneratorMatrix(int m)
+        private static ConcurrentDictionary<(int, int), int[][]> _generatorMatrices = new ConcurrentDictionary<(int, int), int[][]>();
+
+        public static int[] MultiplyByGeneratorMatrix(int[] vector, int m)
         {
             var (rows, columns) = GetDimensions(m);
-            Data = CreateGeneratorMatrix(rows, columns);
-        }
 
-        public List<int> MultiplyByGeneratorMatrix(List<int> vector)
-        {
-            var rows = this.GetRows();
-            var columns = this.GetColumns();
+            _generatorMatrices.TryGetValue((rows, columns), out var generatorMatrix);
+            
+            if(generatorMatrix == null)
+            {
+                generatorMatrix = CreateGeneratorMatrix(rows, columns);
+                _generatorMatrices.TryAdd((rows, columns), generatorMatrix);
+            }
 
-            var encodedVector = new List<int>(columns);
+            var encodedVector = new int[columns];
 
             for (var i = 0; i < columns; i++)
             {
@@ -24,10 +28,10 @@ namespace ReedMullerCode.Matrices
 
                 for (var j = 0; j < rows; j++)
                 {
-                    bit += Data[j][i] * vector[j];
+                    bit += generatorMatrix[j][i] * vector[j];
                 }
 
-                encodedVector.Add(bit % 2);
+                encodedVector[i] = bit % 2;
             }
 
             return encodedVector;
