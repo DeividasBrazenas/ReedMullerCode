@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using ReedMullerCode.Matrices;
 
@@ -8,20 +6,32 @@ namespace ReedMullerCode.Decoder
 {
     public class Decoder
     {
+        /// <summary>
+        /// Decodes ba it array
+        /// </summary>
+        /// <param name="bits">Bits to decode</param>
+        /// <param name="m">Parameter m value</param>
+        /// <returns>Decoded bit array</returns>
         public static int[] Decode(int[] bits, int m)
         {
             var replacedVector = bits.Select(x => x == 0 ? -1 : 1).ToList();
 
-            var wMatrix = WMatrix.GenerateWMatrix(replacedVector.ConvertToMatrix(), 1, m);
+            var wMatrix = WeighingMatrix.GenerateWeighingMatrix(replacedVector.ConvertToMatrix(), 1, m);
 
             for (var i = 2; i <= m; i++)
             {
-                wMatrix = WMatrix.GenerateWMatrix(wMatrix, i, m);
+                wMatrix = WeighingMatrix.GenerateWeighingMatrix(wMatrix, i, m);
             }
 
             return DecodeVector(wMatrix, m);
         }
 
+        /// <summary>
+        /// Decodes w matrix vector to an actual bit array
+        /// </summary>
+        /// <param name="wMatrix">w matrix</param>
+        /// <param name="m">Parameter m value</param>
+        /// <returns>Decoded bit array</returns>
         private static int[] DecodeVector(Matrix wMatrix, int m)
         {
             var vector = wMatrix.Data[0];

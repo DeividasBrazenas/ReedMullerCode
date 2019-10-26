@@ -8,6 +8,12 @@ namespace ReedMullerCode.Matrices
     {
         private static ConcurrentDictionary<(int, int), Matrix> _hMatrices = new ConcurrentDictionary<(int, int), Matrix>();
 
+        /// <summary>
+        /// Generates a Hadamard matrix
+        /// </summary>
+        /// <param name="i">Parameter i value</param>
+        /// <param name="m">Parameter m value</param>
+        /// <returns>Hadamard matrix</returns>
         public static Matrix GenerateHadamardMatrix(int i, int m)
         {
             if (i < 1)
@@ -30,6 +36,12 @@ namespace ReedMullerCode.Matrices
             return hMatrix;
         }
 
+        /// <summary>
+        /// Gets Kronecker product of Identity matrix and another matrix
+        /// </summary>
+        /// <param name="matrix">Matrix</param>
+        /// <param name="identitySize">Size of identity matrix</param>
+        /// <returns>Kronecker product</returns>
         public static Matrix KroneckerProductIdentityWithMatrix(Matrix matrix, int identitySize)
         {
             var matrixHeight = matrix.GetRows();
@@ -55,6 +67,12 @@ namespace ReedMullerCode.Matrices
             return new Matrix(kroneckerMatrix);
         }
 
+        /// <summary>
+        /// Gets Kronecker product of matrix and Identity matrix
+        /// </summary>
+        /// <param name="matrix">Matrix</param>
+        /// <param name="identitySize">Identity matrix size</param>
+        /// <returns>Kronecker product</returns>
         public static Matrix KroneckerProductMatrixWithIdentity(Matrix matrix, int identitySize)
         {
             var matrixHeight = matrix.GetRows();

@@ -5,6 +5,12 @@ namespace ReedMullerCode.Matrices
 {
     public static class MatrixExtensions
     {
+        /// <summary>
+        /// Multiplies to matrices
+        /// </summary>
+        /// <param name="matrix">First matrix</param>
+        /// <param name="matrixToMultiplyBy">Second matrix</param>
+        /// <returns>Result of multiplication matrix</returns>
         public static Matrix MultiplyBy(this Matrix matrix, Matrix matrixToMultiplyBy)
         {
             var matrixRows = matrix.GetRows();
@@ -31,6 +37,12 @@ namespace ReedMullerCode.Matrices
             return new Matrix(resultMatrix);
         }
 
+        /// <summary>
+        /// Creates a matrix
+        /// </summary>
+        /// <param name="rows">Count of rows</param>
+        /// <param name="cols">Count of columns</param>
+        /// <returns>Matrix</returns>
         public static int[][] MatrixCreate(int rows, int cols)
         {
             var result = new int[rows][];

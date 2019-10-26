@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
 using ReedMullerCode.Matrices;
 
 namespace ReedMullerCode.Encoder
@@ -8,6 +7,12 @@ namespace ReedMullerCode.Encoder
     {
         private static ConcurrentDictionary<(int, string), int[]> _encodedVectors = new ConcurrentDictionary<(int, string), int[]>();
         
+        /// <summary>
+        /// Encodes array of bits
+        /// </summary>
+        /// <param name="bits">Bits to encode</param>
+        /// <param name="m">Parameter m value</param>
+        /// <returns>Encoded bits</returns>
         public static int[] Encode(int[] bits, int m)
         {
             if (_encodedVectors.TryGetValue((m, string.Join("", bits)), out var encodedVectorCached))

@@ -50,6 +50,10 @@
     <Compile Include="Decoder\Decoder.cs" />
     <Compile Include="Decoder\DecoderExtensions.cs" />
     <Compile Include="Encoder\Encoder.cs" />
+    <Compile Include="Helpers\Helpers.cs" />
+    <Compile Include="Helpers\PictureHelpers.cs" />
+    <Compile Include="Helpers\TextHelpers.cs" />
+    <Compile Include="Helpers\VectorHelpers.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -58,10 +62,9 @@
     </Compile>
     <Compile Include="Matrices\GeneratorMatrix.cs" />
     <Compile Include="Matrices\HadamardMatrix.cs" />
-    <Compile Include="Matrices\IdentityMatrix.cs" />
     <Compile Include="Matrices\Matrix.cs" />
     <Compile Include="Matrices\MatrixExtensions.cs" />
-    <Compile Include="Matrices\WMatrix.cs" />
+    <Compile Include="Matrices\WeighingMatrix.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtensions.cs" />

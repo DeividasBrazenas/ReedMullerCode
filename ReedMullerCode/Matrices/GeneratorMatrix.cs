@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace ReedMullerCode.Matrices
 {
@@ -8,6 +7,12 @@ namespace ReedMullerCode.Matrices
     {
         private static ConcurrentDictionary<(int, int), int[][]> _generatorMatrices = new ConcurrentDictionary<(int, int), int[][]>();
 
+        /// <summary>
+        /// Multiplies vector by generator matrix
+        /// </summary>
+        /// <param name="vector">Vector to multiply</param>
+        /// <param name="m">Parameter m value</param>
+        /// <returns>Multiplied vector</returns>
         public static int[] MultiplyByGeneratorMatrix(int[] vector, int m)
         {
             var (rows, columns) = GetDimensions(m);
@@ -37,11 +42,22 @@ namespace ReedMullerCode.Matrices
             return encodedVector;
         }
 
+        /// <summary>
+        /// Gets dimensions of generator matrix
+        /// </summary>
+        /// <param name="m">Parameter m value</param>
+        /// <returns>Rows and columns of a generator matrix</returns>
         private static (int Rows, int Columns) GetDimensions(int m)
         {
             return (Rows: m + 1, Columns: 2 * (int)Math.Pow(2, m - 1));
         }
 
+        /// <summary>
+        /// Creates a generator matrix
+        /// </summary>
+        /// <param name="rows">Count of rows</param>
+        /// <param name="columns">Count of columns</param>
+        /// <returns>Generator matrix</returns>
         private static int[][] CreateGeneratorMatrix(int rows, int columns)
         {
             var data = new int[rows][];
