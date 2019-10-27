@@ -38,11 +38,12 @@ namespace ReedMullerCode.Matrices
 
         /// <summary>
         /// Gets Kronecker product of Identity matrix and another matrix
+        /// This is an optimized version, as Kronecker product is easy to predict when identity matrix is multiplied by regular matrix
         /// </summary>
         /// <param name="matrix">Matrix</param>
         /// <param name="identitySize">Size of identity matrix</param>
         /// <returns>Kronecker product</returns>
-        public static Matrix KroneckerProductIdentityWithMatrix(Matrix matrix, int identitySize)
+        private static Matrix KroneckerProductIdentityWithMatrix(Matrix matrix, int identitySize)
         {
             var matrixHeight = matrix.GetRows();
             var matrixWidth = matrix.GetColumns();
@@ -55,12 +56,14 @@ namespace ReedMullerCode.Matrices
             {
                 for (var j = 0; j < kroneckerMatrixWidth; j++)
                 {
-                    var valueOfCell = i / matrixHeight == j / matrixWidth ? 1 : 0;
+                    var identityMatrixValue = i / matrixHeight == j / matrixWidth ? 1 : 0; // Gets a value of an identity matrix
 
-                    if (valueOfCell == 0)
+                    // If the value of identity matrix is 0, then there will be 0s in Kronecker matrix
+                    if (identityMatrixValue == 0)
                         continue;
 
-                    kroneckerMatrix[i][j] = matrix.Data[i % matrixHeight][j % matrixWidth] * valueOfCell;
+                    // If the value of identity matrix is 1, then the value of Kronecker matrix will be taken from provided matrix
+                    kroneckerMatrix[i][j] = matrix.Data[i % matrixHeight][j % matrixWidth];
                 }
             });
 
@@ -69,11 +72,12 @@ namespace ReedMullerCode.Matrices
 
         /// <summary>
         /// Gets Kronecker product of matrix and Identity matrix
+        /// This is an optimized version, as Kronecker product is easy to predict when regular matrix is multiplied by identity matrix
         /// </summary>
         /// <param name="matrix">Matrix</param>
         /// <param name="identitySize">Identity matrix size</param>
         /// <returns>Kronecker product</returns>
-        public static Matrix KroneckerProductMatrixWithIdentity(Matrix matrix, int identitySize)
+        private static Matrix KroneckerProductMatrixWithIdentity(Matrix matrix, int identitySize)
         {
             var matrixHeight = matrix.GetRows();
             var matrixWidth = matrix.GetColumns();
@@ -86,11 +90,13 @@ namespace ReedMullerCode.Matrices
             {
                 for (var j = 0; j < kroneckerMatrixWidth; j++)
                 {
+                    // Get value from the provided matrix
                     var valueOfCell = matrix.Data[i / identitySize][j / identitySize];
 
                     if (valueOfCell == 0)
                         continue;
 
+                    // If Identity matrix value is 1, then kronecker matrix value is value of matrix
                     kroneckerMatrix[i][j] = i % identitySize == j % identitySize ? valueOfCell : 0;
                 }
             });
