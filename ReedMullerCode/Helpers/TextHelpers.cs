@@ -21,7 +21,7 @@ namespace ReedMullerCode.Helpers
         /// <returns>String after the workflow</returns>
         public string HandleTextWithCoding(string binaryString, int m, double mistakeProbability)
         {
-            var vectors = Helpers.ConvertStringToVectors(binaryString, m, out var appendedBits);
+            var vectors = Helpers.ConvertBinaryStringToVectors(binaryString, m, out var appendedBits);
 
             var encodedVectors = vectors.Select(x => x.Encode()).ToList();
 
@@ -37,7 +37,7 @@ namespace ReedMullerCode.Helpers
 
             var decodedVectors = vectorsFromChannel.Select(x => x.Decode()).ToList();
 
-            var decodedBinaryString = Helpers.ConvertVectorsToString(decodedVectors, appendedBits);
+            var decodedBinaryString = Helpers.ConvertVectorsToBinaryString(decodedVectors, appendedBits);
 
             return Helpers.ConvertBinaryToString(decodedBinaryString);
         }

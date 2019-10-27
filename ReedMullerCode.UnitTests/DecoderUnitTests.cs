@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 
 namespace ReedMullerCode.UnitTests
@@ -16,6 +18,63 @@ namespace ReedMullerCode.UnitTests
             var decodedVectorString = string.Join("", decodedVector.Select(bit => bit.ToString()).ToArray());
 
             Assert.AreEqual(expectedDecodedVector, decodedVectorString);
+        }
+
+        [Test]
+        public void Test()
+        {
+            var channel = new Channel();
+            int m = 7;
+            var str = "abcdefghijklmnoprstuvz1234567890";
+            var binaryStr = Helpers.Helpers.ConvertStringToBinary(str);
+            var vectors = Helpers.Helpers.ConvertBinaryStringToVectors(binaryStr, m, out var bits);
+            var encodedVectors = vectors.Select(x => x.Encode()).ToList();
+            var mistakeProbabilities = new double[]
+            {
+                0.2,
+                0.21,
+                0.22,
+                0.22,
+                0.23,
+                0.24,
+                0.25,
+                0.26,
+                0.27,
+                0.28,
+                0.29,
+                0.30,
+                0.31,
+                0.32,
+                0.33,
+                0.34,
+                0.35,
+                0.36,
+                0.37,
+                0.38,
+                0.39,
+                0.40,
+            };
+
+            foreach (var probability in mistakeProbabilities)
+            {
+                var errorCount = 0;
+
+                for (int i = 0; i < 100; i++)
+                {
+                    var vectorsFromChannel =
+                        encodedVectors.Select(x => channel.SendThroughNoisyChannel(x, probability)).ToList();
+
+                    var decodedVectors = vectorsFromChannel.Select(x => x.Decode()).ToList();
+
+                    var newBinaryStr = Helpers.Helpers.ConvertVectorsToBinaryString(decodedVectors, 0);
+                    var newStr = Helpers.Helpers.ConvertBinaryToString(newBinaryStr);
+
+                    if (newStr != str)
+                        errorCount++;
+                }
+
+                Console.WriteLine($"{probability}       {errorCount}");
+            }
         }
     }
 }

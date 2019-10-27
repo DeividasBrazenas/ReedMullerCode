@@ -71,7 +71,7 @@ namespace ReedMullerCode.Helpers
         /// <returns>Binary string of a picture after the workflow</returns>
         public string HandlePictureWithCoding(string binaryString, int m, double mistakeProbability)
         {
-            var vectors = Helpers.ConvertStringToVectors(binaryString, m, out var appendedBits);
+            var vectors = Helpers.ConvertBinaryStringToVectors(binaryString, m, out var appendedBits);
 
             var encodedVectors = new Vector[vectors.Count];
             Parallel.For(0, encodedVectors.Length, i => { encodedVectors[i] = vectors[i].Encode(); });
@@ -90,7 +90,7 @@ namespace ReedMullerCode.Helpers
 
             Parallel.For(0, decodedVectors.Length, i => { decodedVectors[i] = vectorsFromChannel[i].Decode(); });
 
-            return Helpers.ConvertVectorsToString(decodedVectors.ToList(), appendedBits);
+            return Helpers.ConvertVectorsToBinaryString(decodedVectors.ToList(), appendedBits);
         }
 
         /// <summary>

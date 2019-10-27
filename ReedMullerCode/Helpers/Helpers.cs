@@ -8,13 +8,13 @@ namespace ReedMullerCode.Helpers
     public class Helpers
     {
         /// <summary>
-        /// Converts a string to a list of vectors
+        /// Converts a binary string to a list of vectors
         /// </summary>
-        /// <param name="text">String to convert</param>
+        /// <param name="text">Binary string to convert</param>
         /// <param name="m">Parameter m value</param>
         /// <param name="appendedBits">Count of appended bits to last vector</param>
         /// <returns>List of converted vectors</returns>
-        public static List<Vector> ConvertStringToVectors(string text, int m, out int appendedBits)
+        public static List<Vector> ConvertBinaryStringToVectors(string text, int m, out int appendedBits)
         {
             var vectors = text.SplitInParts(Vector.GetExpectedVectorLength(m)).ToList();
 
@@ -25,12 +25,12 @@ namespace ReedMullerCode.Helpers
         }
 
         /// <summary>
-        /// Converts list of vectors to a string
+        /// Converts list of vectors to a binary string
         /// </summary>
         /// <param name="vectors">List of vectors</param>
         /// <param name="appendedBits">Count of appended bits to last vector</param>
         /// <returns>Converted string</returns>
-        public static string ConvertVectorsToString(List<Vector> vectors, int appendedBits)
+        public static string ConvertVectorsToBinaryString(List<Vector> vectors, int appendedBits)
         {
             var str = string.Join("", vectors.Select(x => x.ToString()));
             return str.Substring(0, str.Length - appendedBits);
